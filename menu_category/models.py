@@ -5,7 +5,7 @@ from shared.models import BaseModel
 
 # Create your models here.
 class MenuCategory(BaseModel):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True, null=True)
     parent_id = models.ForeignKey(
         "self",
