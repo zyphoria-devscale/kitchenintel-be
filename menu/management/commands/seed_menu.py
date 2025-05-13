@@ -3,7 +3,7 @@ from menu.models import Menu
 from menu_category.models import MenuCategory
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
-from menu.seed_data.menu_data import data
+from menu.seed.menu_data import data
 
 class Command(BaseCommand):
     help = "Seed Menus"
