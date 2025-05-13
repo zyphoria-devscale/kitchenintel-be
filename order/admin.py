@@ -14,6 +14,11 @@ class OrderAdmin(admin.ModelAdmin):
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = (
         "id",
+        "quantity",
+        "price_at_order_time",
+        "subtotal",
+        "created_at",
+        "updated_at"
     )
 
 admin.site.register(Order, OrderAdmin)
