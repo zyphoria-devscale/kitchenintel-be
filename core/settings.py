@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'menu_category',
     'menu',
+    'order',
 ]
 
 MIDDLEWARE = [
