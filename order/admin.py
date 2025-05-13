@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from .models import Order, OrderItem
 
+
 class OrderAdmin(admin.ModelAdmin):
     list_display = (
         "id",
@@ -11,6 +12,7 @@ class OrderAdmin(admin.ModelAdmin):
         "updated_at",
     )
 
+
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = (
         "id",
@@ -18,8 +20,9 @@ class OrderItemAdmin(admin.ModelAdmin):
         "price_at_order_time",
         "subtotal",
         "created_at",
-        "updated_at"
+        "updated_at",
     )
+
 
 admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderItem, OrderItemAdmin)
