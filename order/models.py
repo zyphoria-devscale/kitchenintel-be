@@ -30,7 +30,6 @@ class OrderItem(BaseModel):
     notes = models.TextField(blank=True, null=True)
 
 
-# Signal handlers to update Order total_amount when OrderItem is created or updated
 @receiver(post_save, sender=OrderItem)
 def update_order_total_on_save(sender, instance, **kwargs):
     """
@@ -43,7 +42,6 @@ def update_order_total_on_save(sender, instance, **kwargs):
     order.save()
 
 
-# Signal handler to update Order total_amount when an OrderItem is deleted
 @receiver(post_delete, sender=OrderItem)
 def update_order_total_on_delete(sender, instance, **kwargs):
     """
