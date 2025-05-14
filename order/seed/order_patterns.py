@@ -92,16 +92,6 @@ WEEKEND_PATTERN = {
         ],
         "avg_items_per_order": 3.0,  # More items per order on weekend dinners
     },
-    # Late night (10:00 PM - 12:00 AM)
-    "late_night": {
-        "time_range": (22, 24),
-        "order_frequency": 8,
-        "popular_items": [
-            "Mie Goreng Jawa", "Chicken Quesadilla", "Classic Cheeseburger",
-            "Ice Cream Sundae", "Strawberry Smoothie", "Vanilla Milkshake"
-        ],
-        "avg_items_per_order": 1.8,
-    },
 }
 
 # Special days with different patterns (e.g., holidays, promotions)
@@ -138,5 +128,5 @@ NOTES_TEMPLATES = [
     "Extra noodle",
     "No cilantro",
     "Gluten-free if possible",
-    "Extra cheese"
+    "Extra toppings"
 ]
