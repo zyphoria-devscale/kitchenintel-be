@@ -25,12 +25,6 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING(f"Menu '{menu_title}' not found"))
             return None
     
-    def update_utc_timestamps(self, order_id, utc_dt):
-        Order.objects.filter(id=order_id).update(
-            created_at=utc_dt,
-            updated_at=utc_dt
-        )
-    
     @transaction.atomic
     def handle(self, *args, **kwargs):
         self.stdout.write("Seeding order data...")
@@ -90,7 +84,10 @@ class Command(BaseCommand):
                     )
                     
                     # Update the timestamps directly in the database with UTC time
-                    self.update_utc_timestamps(order.id, utc_dt)
+                    Order.objects.filter(id=order.id).update(
+                        created_at=utc_dt,
+                        updated_at=utc_dt
+                    )
                     
                     # Refresh the instance to get the updated values
                     order.refresh_from_db()
@@ -125,7 +122,10 @@ class Command(BaseCommand):
                     )
                     
                     # Update timestamps directly in the database with UTC time
-                    self.update_utc_timestamps(order_item.id, utc_dt)
+                    OrderItem.objects.filter(id=order_item.id).update(
+                        created_at=utc_dt,
+                        updated_at=utc_dt
+                    )
                     
                     # Refresh to get updated values
                     order_item.refresh_from_db()
