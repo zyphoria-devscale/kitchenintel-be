@@ -11,6 +11,7 @@ class Order(BaseModel):
         PAID = "PAID", "Paid"
         UNPAID = "UNPAID", "Unpaid"
 
+    customer_name = models.CharField(max_length=100)
     status = models.CharField(
         max_length=10, choices=OrderStatus.choices, default=OrderStatus.UNPAID
     )

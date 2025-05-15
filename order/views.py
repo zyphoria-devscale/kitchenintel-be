@@ -1,17 +1,16 @@
 from rest_framework import generics
 
-from .models import Order, OrderItem
-from .serializers import OrderItemSerializer, OrderSerializer
+from .models import Order
+from .serializers import OrderWithItemsSerializer
 
 
-class OrderCreateView(generics.ListCreateAPIView):
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
+class OrderWithItemsCreateView(generics.ListCreateAPIView):
+    serializer_class = OrderWithItemsSerializer
 
     def get_queryset(self):
         queryset = Order.objects.all()
         created_at = self.request.query_params.get("created_at")
-        status = self.request.query_params.get("status")
+        order_status = self.request.query_params.get("status")
 
         if created_at:
             try:
@@ -21,44 +20,12 @@ class OrderCreateView(generics.ListCreateAPIView):
                 # If the date format is invalid, return empty queryset
                 return Order.objects.none()
 
-        if status:
-            queryset = queryset.filter(status=status)
+        if order_status:
+            queryset = queryset.filter(status=order_status)
 
         return queryset
 
 
-class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
+class OrderWithItemsDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Order.objects.all()
-    serializer_class = OrderSerializer
-
-
-class OrderItemCreateView(generics.ListCreateAPIView):
-    queryset = OrderItem.objects.all()
-    serializer_class = OrderItemSerializer
-
-    def get_queryset(self):
-        queryset = OrderItem.objects.all()
-        order_id = self.request.query_params.get("order_id")
-        menu_id = self.request.query_params.get("menu_id")
-        created_at = self.request.query_params.get("created_at")
-
-        if order_id:
-            queryset = queryset.filter(order_id=order_id)
-
-        if menu_id:
-            queryset = queryset.filter(menu_id=menu_id)
-
-        if created_at:
-            try:
-                # Filter by date with format yyyy-mm-dd
-                queryset = queryset.filter(created_at__date=created_at)
-            except ValueError:
-                # If the date format is invalid, return empty queryset
-                return OrderItem.objects.none()
-
-        return queryset
-
-
-class OrderItemDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = OrderItem.objects.all()
-    serializer_class = OrderItemSerializer
+    serializer_class = OrderWithItemsSerializer
