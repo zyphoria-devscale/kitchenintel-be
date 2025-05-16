@@ -27,7 +27,6 @@ def format_customer_name(name):
         else:
             # Standard capitalization
             formatted_words.append(word.capitalize())
-    
     return " ".join(formatted_words)
 
 def asia_jakarta_time(value):
