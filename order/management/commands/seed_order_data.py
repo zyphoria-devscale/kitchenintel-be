@@ -69,6 +69,7 @@ class Command(BaseCommand):
                 
                 orders_data.append({
                     "status": order["status"],
+                    "customer_name": order["customer_name"],
                     "total_amount": total_amount,
                     "created_at": order_date,
                     "updated_at": order_date,
@@ -86,7 +87,8 @@ class Command(BaseCommand):
                     # Create the order (this will use auto timestamps)
                     order = Order.objects.create(
                         status=order_dict["status"],
-                        total_amount=order_dict["total_amount"]
+                        total_amount=order_dict["total_amount"],
+                        customer_name=order_dict["customer_name"]
                     )
                     
                     # Update the timestamps directly in the database with UTC time

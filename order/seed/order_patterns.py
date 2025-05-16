@@ -130,3 +130,19 @@ NOTES_TEMPLATES = [
     "Gluten-free if possible",
     "Extra toppings"
 ]
+
+# Customer names
+CUSTOMER_NAMES = [
+    "Amri",
+    "Ilham",
+    "Ryan",
+    "Aditya",
+    "Fathul",
+    "Indra",
+    "Boris",
+    "Surya",
+    "Coki",
+    "Tretan",
+    "Aan Android",
+    "Dustin Tiffani"
+]

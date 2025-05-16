@@ -10,7 +10,8 @@ from .order_patterns import (
     WEEKEND_PATTERN, 
     SPECIAL_DAYS, 
     STATUS_DISTRIBUTION,
-    NOTES_TEMPLATES
+    NOTES_TEMPLATES,
+    CUSTOMER_NAMES
 )
 
 def is_weekend(date):
@@ -118,7 +119,8 @@ def generate_orders_for_date(date, all_menu_items):
                 
             orders_data[timestamp_str].append({
                 "status": status,
-                "order_items": order_items
+                "order_items": order_items,
+                "customer_name": random.choice(CUSTOMER_NAMES)
             })
     
     return orders_data

@@ -1,7 +1,7 @@
 from django.db import transaction
 from menu.models import Menu
 from rest_framework import serializers
-from shared.utils import format_customer_name, asia_jakarta_time
+from shared.utils import format_customer_name
 
 from .models import Order, OrderItem
 
@@ -14,18 +14,9 @@ class OrderItemSerializer(serializers.ModelSerializer):
     )
     subtotal = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
 
-    created_at = serializers.SerializerMethodField()
-    updated_at = serializers.SerializerMethodField()
-    
     class Meta:
         model = OrderItem
         fields = "__all__"
-        
-    def get_created_at(self, obj):
-        return asia_jakarta_time(obj.created_at).strftime('%Y-%m-%d %H:%M:%S')
-        
-    def get_updated_at(self, obj):
-        return asia_jakarta_time(obj.updated_at).strftime('%Y-%m-%d %H:%M:%S')
 
     def create(self, validated_data):
         # Get the menu item to retrieve its price
@@ -64,11 +55,6 @@ class OrderWithItemsSerializer(serializers.ModelSerializer):
     total_amount = serializers.DecimalField(
         max_digits=10, decimal_places=2, read_only=True
     )
-
-class OrderSerializer(serializers.ModelSerializer):
-    order_items = serializers.SerializerMethodField()
-    created_at = serializers.SerializerMethodField()
-    updated_at = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
@@ -157,9 +143,3 @@ class OrderSerializer(serializers.ModelSerializer):
                 subtotal=subtotal,
                 notes=notes,
             )
-        
-    def get_created_at(self, obj):
-        return asia_jakarta_time(obj.created_at).strftime('%Y-%m-%d %H:%M:%S')
-        
-    def get_updated_at(self, obj):
-        return asia_jakarta_time(obj.updated_at).strftime('%Y-%m-%d %H:%M:%S')
