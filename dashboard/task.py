@@ -31,6 +31,24 @@ def weekly():
     insert_to_db(WEEKLY_DASHBOARD, data, insight, from_date, to_date)
     print("end scheduler weekly task: weekly()")
 
+@periodic_task(crontab(day=1),retries=2,retry_delay=60)
+def monthly():
+    print("start scheduler monthly task: monthly()")
+    to_date = datetime.date.today() - datetime.timedelta(days=1)
+    from_date = datetime.date(to_date.year, to_date.month, 1)
+    data = get_order_details(from_date, to_date)
+
+    generator = GraphGenerator(data=data)
+    heat_map = generator.generate_hourly_sales_heatmap(save_path="media/monthly")
+    total_sales_over_time = generator.generate_graph_total_sales_over_time_by_date(save_path="media/monthly")
+    top_selling_menu = generator.generate_graph_top_selling_menu_item(save_path="media/monthly")
+    top_category = generator.generate_graph_total_sales_by_category(save_path="media/monthly")
+
+    data = [heat_map, total_sales_over_time, top_selling_menu, top_category]
+    insight = generate_insight(data)
+    insert_to_db(WEEKLY_DASHBOARD, data, insight, from_date, to_date)
+    print("end scheduler monthly task: monthly()")
+
 
 def insert_to_db(type_dashboard: str, data: List[graph_data], insight: str, from_date: datetime.date, to_date: datetime.date):
     dashboard = Dashboard(type_dashboard=type_dashboard, insight=insight)

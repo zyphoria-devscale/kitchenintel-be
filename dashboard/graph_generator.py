@@ -2,6 +2,8 @@ from typing import Tuple, List, Any
 import pandas as pd
 import seaborn as sns
 import matplotlib
+from matplotlib import ticker
+from matplotlib.ticker import FuncFormatter
 
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -52,7 +54,8 @@ class GraphGenerator:
         plot_data.sort_values(by=['is_others', 'quantity'], ascending=[True, False], inplace=True)
 
         colors = sns.color_palette('viridis', n_colors=len(plot_data) - 1) + [(0.7, 0.7, 0.7)]
-        sns.barplot(x='quantity', y='menu_name', hue='menu_name',data=plot_data, palette=colors, dodge=False, legend=False)
+        sns.barplot(x='quantity', y='menu_name', hue='menu_name', data=plot_data, palette=colors, dodge=False,
+                    legend=False)
 
         for i, v in enumerate(plot_data['quantity']):
             plt.text(v + 0.1, i, f"{int(v)}", va='center')
@@ -76,9 +79,13 @@ class GraphGenerator:
         plt.figure(figsize=(8, 5))
 
         category_sales = self.data.groupby('category')['subtotal'].sum().sort_values(ascending=False)
-        sns.barplot(x=category_sales.values, y=category_sales.index,hue=category_sales.index, palette='magma', legend=False)
+        ax = sns.barplot(x=category_sales.values, y=category_sales.index, hue=category_sales.index, palette='magma',
+                         legend=False)
 
-        plt.xlabel('Total Sales (Rp) in Millions')
+        # Format x-axis ticks in millions (for example, 150M)
+        ax.xaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f'{x * 1e-6:.0f}M'))
+
+        plt.xlabel('Total Sales (Rp)')
         plt.ylabel('Category')
         plt.title(title)
 
@@ -95,6 +102,8 @@ class GraphGenerator:
         plt.figure(figsize=(11, 5))
         ax = sns.lineplot(x=daily_sales.index, y=daily_sales.values, marker='o')
         ax.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
+        ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f'{x * 1e-6:.0f}M'))
+
         plt.xticks(rotation=45)
         plt.xlabel('Date')
         plt.ylabel('Total Sales (Rp) in Millions')
@@ -122,40 +131,84 @@ class GraphGenerator:
         filename = f"{save_path}/{self.unique_id}_hourly_sales_heatmap.png"
         title = "Hourly Sales Heatmap by Day of Week"
 
+        # Ensure correct types
         self.data['order_date'] = pd.to_datetime(self.data['order_date'])
         self.data['hour'] = self.data['order_date'].dt.hour
         self.data['day'] = self.data['order_date'].dt.day_name()
 
-        pivot = self.data.pivot_table(index='day', columns='hour', values='subtotal', aggfunc='sum', fill_value=0)
-        pivot = pivot.reindex(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'])
-        pivot = pivot.loc[:, (pivot.sum() > 0)].astype(float)
+        # Aggregate sales by day and hour
+        pivot = self.data.pivot_table(
+            index='day',
+            columns='hour',
+            values='subtotal',
+            aggfunc='sum',
+            fill_value=0
+        )
 
-        plt.figure(figsize=(max(10, min(20, int(len(pivot.columns) * 0.8))), 8))
+        # Reorder days
+        day_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+        pivot = pivot.reindex(day_order)
+        pivot = pivot.loc[:, pivot.sum() > 0].astype(float)
+
+        # Plot heatmap
+        fig_width = max(10, min(20, int(len(pivot.columns) * 1)))
+        plt.figure(figsize=(fig_width, 8))
+
         mask = pivot == 0
-        ax = sns.heatmap(pivot, cmap='YlOrRd', annot=True, fmt='.0f', linewidths=0.5,
-                         cbar_kws={'label': 'Total Sales (Rp)', 'shrink': 0.8}, mask=mask,
-                         annot_kws={"size": 9})
+        # Create heatmap and get the colorbar
+        ax = sns.heatmap(
+            pivot,
+            cmap='YlOrRd',
+            annot=True,
+            fmt='.0f',
+            linewidths=0.5,
+            cbar_kws={'label': 'Total Sales (Rp)', 'shrink': 0.8},
+            mask=mask,
+            annot_kws={"size": 9}
+        )
 
-        for t in ax.texts:
-            if t.get_text() != '0':
+        # Format color bar to show readable numbers like "10M"
+        colorbar = ax.collections[0].colorbar
+        colorbar.ax.yaxis.set_major_formatter(FuncFormatter(lambda x, _: f'{x * 1e-6:.0f}M'))
+
+        # Format text labels with thousands separator
+        for text in ax.texts:
+            txt = text.get_text()
+            if txt != '0':
                 try:
-                    t.set_text(f"{float(t.get_text()):,.0f}")
+                    val = float(txt)
+                    text.set_text(f"{val:,.0f}")
                 except ValueError:
-                    pass
+                    continue
 
+        # Titles and labels
         plt.title(title, fontsize=16, pad=20)
         plt.xlabel('Hour of Day (24-hour format)', fontsize=12)
         plt.ylabel('Day of Week', fontsize=12)
+        plt.xticks(
+            ticks=np.arange(0.5, len(pivot.columns) + 0.5),
+            labels=[f"{h:02d}:00" for h in pivot.columns],
+            rotation=45
+        )
 
-        plt.xticks(np.arange(0.5, len(pivot.columns) + 0.5), [f"{h:02d}:00" for h in pivot.columns], rotation=45)
-
+        # Peak metrics
         peak_hour = pivot.sum().idxmax()
         peak_day = pivot.sum(axis=1).idxmax()
         business_hours = f"{min(pivot.columns):02d}:00-{max(pivot.columns):02d}:00"
 
-        plt.figtext(0.5, 0.01,
-                    f"Peak sales hour: {peak_hour:02d}:00 | Peak sales day: {peak_day} | Business hours: {business_hours}",
-                    ha="center", fontsize=12, bbox={"facecolor": "lightgray", "alpha": 0.5, "pad": 5})
+        # Footer text
+        footer_text = (
+            f"Peak sales hour: {peak_hour:02d}:00 | "
+            f"Peak sales day: {peak_day} | "
+            f"Business hours: {business_hours}"
+        )
+        plt.figtext(0.5, -0.05, footer_text, ha="center", fontsize=12,
+                    bbox={"facecolor": "lightgray", "alpha": 0.5, "pad": 10})
 
-        return self._finalize_graph(filename, title, PROMPT_GRAPH_DESC,
-                                    'give me the report of {title}', convert_numpy_for_json(pivot.to_dict()))
+        return self._finalize_graph(
+            filename,
+            title,
+            PROMPT_GRAPH_DESC,
+            'give me the report of {title}',
+            convert_numpy_for_json(pivot.to_dict())
+        )
