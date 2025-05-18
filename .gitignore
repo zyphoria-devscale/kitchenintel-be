@@ -172,3 +172,5 @@ cython_debug/
 #.idea/
 
 # End of https://www.toptal.com/developers/gitignore/api/django
+/braided-destiny-454115-g2-912f665a8ac9.json
+.idea
