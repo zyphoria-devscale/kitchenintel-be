@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     'menu_category',
     'menu',
     'order',
+    'dashboard',
+    'huey.contrib.djhuey',
 ]
 
 MIDDLEWARE = [
