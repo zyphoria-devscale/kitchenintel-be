@@ -174,3 +174,8 @@ cython_debug/
 /braided-destiny-454115-g2-912f665a8ac9.json
 .idea
 /.env
+credentials
+credentials/*
+static
+static/*
+
