@@ -21,6 +21,7 @@ For the {VISUALIZATION_TYPE} shown:
 Keep your entire analysis under 150 words. Use precise, direct language suitable for time-constrained executives. Focus exclusively on what is explicitly shown in the data without speculation. Include exact numbers from the visualization in your analysis.
 
 Do not make recommendations unless explicitly asked. Your role is to distill complex data into clear, accurate insights that support informed decision-making.
+IMPORTANT: The response should be plain text, no format or table. use double break line for new paragraph
 """
 
 PROMPT_GRAPH_MENU_CHART_DESC = """
@@ -43,6 +44,7 @@ For this bar chart visualization:
 Keep your entire description under 100 words. Use precise numerical values from the chart. Write in clear, direct language suitable for busy executives reviewing performance dashboards.
 
 IMPORTANT: "Others" represents aggregated smaller items, not a single menu item. Address it separately from individual items in your analysis.
+IMPORTANT: The response should be plain text, no format or table. use double break line for new paragraph
 """
 
 PROMPT_GENERATE_INSIGHT="""
@@ -72,4 +74,5 @@ STRATEGIC RECOMMENDATIONS:
 
 Your analysis must be concise, actionable, and focused exclusively on insights that would influence C-level decision-making. 
 Avoid restating obvious data points and technical details. Instead, emphasize business implications, growth opportunities, and strategic advantages that could be gained through specific actions.
+IMPORTANT: The response should be plain text, no format or table. use double break line for new paragraph
 """

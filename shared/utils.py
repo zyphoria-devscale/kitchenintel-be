@@ -74,7 +74,7 @@ def convert_numpy_for_json(data: dict) -> str:
             return obj
 
     cleaned_data = convert(data)
-    return json.dumps(cleaned_data, ensure_ascii=False, indent=2)
+    return json.dumps(cleaned_data)
 
 
 class graph_data:
