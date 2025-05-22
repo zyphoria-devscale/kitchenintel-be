@@ -178,4 +178,4 @@ credentials
 credentials/*
 static
 static/*
-
+test_task.py
