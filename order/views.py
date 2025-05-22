@@ -8,7 +8,7 @@ class OrderWithItemsCreateView(generics.ListCreateAPIView):
     serializer_class = OrderWithItemsSerializer
 
     def get_queryset(self):
-        queryset = Order.objects.all()
+        queryset = Order.objects.all().order_by('-created_at')
         created_at = self.request.query_params.get("created_at")
         order_status = self.request.query_params.get("status")
 
