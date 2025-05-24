@@ -7,6 +7,7 @@ from .serializers import MenuCategorySerializer
 class MenuCategoryCreateView(generics.ListCreateAPIView):
     queryset = MenuCategory.objects.all()
     serializer_class = MenuCategorySerializer
+    pagination_class = None
 
     def get_queryset(self):
         queryset = MenuCategory.objects.all()
