@@ -24,20 +24,23 @@ ALLOWED_HOSTS = ['103.217.144.164', 'localhost', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'corsheaders',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'menu_category',
-    'menu',
-    'order',
-    'dashboard',
-    'huey.contrib.djhuey',
+    "daphne",
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "corsheaders",
+    "rest_framework",
+    "rest_framework.authtoken",
+    "menu_category",
+    "menu",
+    "order",
+    "dashboard",
+    "chat",
+    "huey.contrib.djhuey",
+    "channels",
 ]
 
 MIDDLEWARE = [
@@ -69,8 +72,16 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'core.wsgi.application'
+WSGI_APPLICATION = "core.wsgi.application"
 CORS_ALLOW_ALL_ORIGINS = True
+ASGI_APPLICATION = "core.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {"hosts": [("127.0.0.1", 6379)], "prefix": "channels:"},
+    }
+}
 
 
 # Database

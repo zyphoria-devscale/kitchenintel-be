@@ -1,3 +1,4 @@
+from core.consumer import ChatConsumer
 from core.logout import logout_view
 from django.contrib import admin
 from django.urls import include, path
@@ -10,5 +11,9 @@ urlpatterns = [
     path("api/", include("order.urls")),
     path("api/", include("dashboard.urls")),
     path("api/login/", obtain_auth_token, name="api_token_auth"),
-    path("api/logout/", logout_view, name="api_logout")
+    path("api/logout/", logout_view, name="api_logout"),
+]
+
+websocket_urlpatterns = [
+    path("ws/chat/<str:session_id>/", ChatConsumer.as_asgi()),
 ]

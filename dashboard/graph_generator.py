@@ -283,10 +283,20 @@ class GraphGenerator:
             bbox={"facecolor": "lightgray", "alpha": 0.5, "pad": 10},
         )
 
-        return self._finalize_graph(
-            filename,
+        plt.tight_layout()
+        plt.savefig(filename, dpi=300, bbox_inches="tight")
+        image_url = self.bucket.upload_file(filename)
+        self.prompt_manager.add_system_message(
+            PROMPT_GRAPH_DESC.format(VISUALIZATION_TYPE=title)
+        )
+        self.prompt_manager.add_message_with_image(
+            "user", f"give me the report of {title}", image_url
+        )
+        description = self.prompt_manager.generate()
+        delete_file_graph(filename)
+        return graph_data(
             title,
-            PROMPT_GRAPH_DESC,
-            "give me the report of {title}",
-            convert_numpy_for_json(pivot.to_dict()),
+            image_url,
+            description,
+            raw_data=convert_numpy_for_json(pivot.to_dict()),
         )
