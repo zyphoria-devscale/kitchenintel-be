@@ -13,7 +13,7 @@ class GraphSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Graph
-        exclude = ["raw_data", "dashboard", "description"]
+        exclude = ["raw_data", "dashboard"]
         read_only_fields = ["created_at"]
 
     def get_chart_data(self, obj) -> List[Dict[str, Any]]:
