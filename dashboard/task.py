@@ -1,5 +1,5 @@
 import datetime
-from typing import List, Tuple, Any
+from typing import List
 
 from huey import crontab
 from huey.contrib.djhuey import periodic_task, task
