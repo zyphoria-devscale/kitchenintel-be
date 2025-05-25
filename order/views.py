@@ -1,4 +1,5 @@
 from rest_framework import generics
+from rest_framework.permissions import AllowAny
 
 from .models import Order
 from .serializers import OrderWithItemsSerializer
@@ -6,6 +7,7 @@ from .serializers import OrderWithItemsSerializer
 
 class OrderWithItemsCreateView(generics.ListCreateAPIView):
     serializer_class = OrderWithItemsSerializer
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         queryset = Order.objects.all().order_by('-created_at')
