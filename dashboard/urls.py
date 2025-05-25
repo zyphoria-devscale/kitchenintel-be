@@ -5,6 +5,7 @@ from .views import (
     MonthlyDashboardListView,
     WeeklyDashboardDetailView,
     WeeklyDashboardListView,
+    GeneratePastData
 )
 
 urlpatterns = [
@@ -28,4 +29,5 @@ urlpatterns = [
         MonthlyDashboardDetailView.as_view(),
         name="monthly-dashboard-detail",
     ),
+    path('generate-data/', GeneratePastData.as_view(), name='generate-past-data-api'),
 ]
