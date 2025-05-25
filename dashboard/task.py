@@ -259,7 +259,7 @@ def daily():
 
 @task(retries=2, retry_delay=60)
 def insert_to_chroma(data: List[Graph], type_dashboard: str):
-    print("start insert to db graph: insert_to_db_graph()")
+    print("start insert to chromadb: insert_to_chroma()")
     metadatas = []
     for i in data:
         meta = {
@@ -282,7 +282,7 @@ def insert_to_chroma(data: List[Graph], type_dashboard: str):
         documents=[i.description for i in data],
         metadatas=metadatas,
     )
-    print("end insert to db graph: insert_to_db_graph()")
+    print("end insert to chromadb: insert_to_chroma()")
 
 @task(retries=2, retry_delay=60)
 def custom_task(from_date: datetime.date, to_date: datetime.date,type_dashboard: str):
