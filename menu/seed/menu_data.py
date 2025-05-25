@@ -36,7 +36,7 @@ data = [
     },
     {
         "title": "Ramen Shoyu",
-        "description": "Soy sauce-based ramen with egg, nori, and sliced pork.",
+        "description": "Soy sauce-based ramen with egg, nori, and sliced beef.",
         "price": 67000,
         "is_recommended": False,
         "category": "Soups"
@@ -126,8 +126,8 @@ data = [
         "category": "Noodle Dishes"
     },
     {
-        "title": "BBQ Pork Ribs",
-        "description": "Tender pork ribs glazed with smoky BBQ sauce.",
+        "title": "BBQ Beef Ribs",
+        "description": "Tender beef ribs glazed with smoky BBQ sauce.",
         "price": 110000,
         "is_recommended": False,
         "category": "Grilled Items"
