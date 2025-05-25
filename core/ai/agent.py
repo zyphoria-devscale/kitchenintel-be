@@ -62,7 +62,7 @@ async def chats(msg: []):
         name="bussiness-analyst agent",
         instructions=AGENT_INSTRUCTIONS,
         tools=[get_report_tool, get_today_date],
-        model="gpt-4.1",
+        model="gpt-4o",
     )
     result = await Runner.run(agent, msg)
     return result.final_output
