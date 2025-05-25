@@ -41,7 +41,7 @@ WEEKDAY_PATTERN = {
         "order_frequency": 20,
         "popular_items": [
             "Beef Rendang", "Korean Fried Chicken", "Grilled Chicken Steak",
-            "BBQ Pork Ribs", "Spaghetti Carbonara", "Beef Lasagna",
+            "BBQ Beef Ribs", "Spaghetti Carbonara", "Beef Lasagna",
             "Tom Yum Soup", "Ramen Shoyu"
         ],
         "avg_items_per_order": 2.5,
@@ -87,7 +87,7 @@ WEEKEND_PATTERN = {
         "order_frequency": 25,
         "popular_items": [
             "Beef Rendang", "Korean Fried Chicken", "Grilled Chicken Steak",
-            "BBQ Pork Ribs", "Spaghetti Carbonara", "Beef Lasagna",
+            "BBQ Beef Ribs", "Spaghetti Carbonara", "Beef Lasagna",
             "Tom Yum Soup", "Ramen Shoyu", "Holiday Roast Turkey"
         ],
         "avg_items_per_order": 3.0,  # More items per order on weekend dinners
@@ -137,12 +137,14 @@ CUSTOMER_NAMES = [
     "Ilham",
     "Ryan",
     "Aditya",
-    "Fathul",
-    "Indra",
-    "Boris",
-    "Surya",
-    "Coki",
-    "Tretan",
     "Aan Android",
-    "Dustin Tiffani"
+    "Dustin Tiffani",
+    "Reza",
+    "Chandra",
+    "Chytya",
+    "Rosa",
+    "Margaret",
+    "Charles",
+    "Cindy",
+    "Diana",
 ]
