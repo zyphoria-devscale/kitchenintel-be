@@ -86,7 +86,7 @@ def weekly():
         cache.delete(lock_key + '_running')
 
 
-@periodic_task(crontab(day=1), retries=2, retry_delay=60)
+@periodic_task(crontab(day=1, hour=17, minute=0), retries=2, retry_delay=60)
 def monthly():
     # Create a lock key for the current month
     today = datetime.date.today()
@@ -185,7 +185,7 @@ def insert_to_db(
     print("end insert to db graph: insert_to_db_graph()")
 
 
-@periodic_task(crontab(hour=17), retries=2, retry_delay=60)
+@periodic_task(crontab(hour=17, minute=0), retries=2, retry_delay=60)
 def daily():
     # Create a lock key with today's date to ensure uniqueness per day
     today = datetime.date.today()
