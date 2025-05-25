@@ -14,7 +14,7 @@ client = OpenAI(api_key=API_KEY)
 
 
 class PromptManager:
-    def __init__(self, messages=None, model="o4-mini"):
+    def __init__(self, messages=None, model="gpt-4.1"):
         if messages is None:
             messages = []
         self.messages = messages
