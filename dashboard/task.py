@@ -1,5 +1,5 @@
 import datetime
-from typing import List
+from typing import List, Tuple, Any
 
 from huey import crontab
 from huey.contrib.djhuey import periodic_task, task
@@ -35,7 +35,7 @@ def weekly():
         cache.set(lock_key + '_running', True, 7200)  # 2 hour timeout
         
         to_date = datetime.date.today()
-        from_date = to_date - datetime.timedelta(days=7)
+        from_date = to_date - datetime.timedelta(days=6)
         print(f"get order details from: {from_date} to: {to_date}")
         
         # Get order details
@@ -283,3 +283,98 @@ def insert_to_chroma(data: List[Graph], type_dashboard: str):
         metadatas=metadatas,
     )
     print("end insert to db graph: insert_to_db_graph()")
+
+@task(retries=2, retry_delay=60)
+def custom_task(from_date: datetime.date, to_date: datetime.date,type_dashboard: str):
+    today = datetime.date.today()
+    lock_key = f'monthly_task_lock_{from_date}_{to_date}_{type_dashboard}'
+
+    if cache.get(lock_key):
+        print(f"Custom task already ran successfully for {from_date}_{to_date}_{type_dashboard}. Skipping.")
+        return
+
+    if cache.get(lock_key + '_running'):
+        print(f"Custom task already running for {from_date}_{to_date}_{type_dashboard}. Skipping.")
+        return
+    else:
+        cache.set(lock_key + '_running', True, 7200)
+
+    try:
+        print(f"start custom task: custom_task()")
+
+        order_data = get_order_details(from_date, to_date)
+        print(f"get order details from: {from_date} to: {to_date}")
+
+        if not order_data:
+            print("Warning: No order details")
+            return
+
+        datas = []
+        generator = GraphGenerator(data=order_data)
+        if type_dashboard == "daily":
+            print("generate daily graph: daily()")
+            total_sales_hour_time = generator.generate_graph_total_sales_by_hour_time(
+                save_path="media/daily"
+            )
+            top_selling_menu = generator.generate_graph_top_selling_menu_item(
+                save_path="media/daily"
+            )
+            top_category = generator.generate_graph_total_sales_by_category(
+                save_path="media/daily"
+            )
+            datas.append(total_sales_hour_time)
+            datas.append(top_selling_menu)
+            datas.append(top_category)
+
+            graphs = []
+            print("save to database: insert_to_db_graph()")
+            for i in datas:
+                graph = Graph(
+                    title=i.title,
+                    description=i.description,
+                    raw_data=i.raw_data,
+                    url=i.url,
+                    from_date=from_date,
+                    to_date=to_date,
+                )
+                graph.save()
+                graphs.append(graph)
+            print("insert to chroma: insert_to_chroma()")
+            insert_to_chroma(graphs, "daily")
+            print("end custom task: custom_task()")
+        else:
+            print(f"generate {type_dashboard} graph")
+            heat_map = generator.generate_hourly_sales_heatmap(save_path=f"media/{type_dashboard}")
+            total_sales_over_time = generator.generate_graph_total_sales_over_time_by_date(
+                save_path=f"media/{type_dashboard}"
+            )
+            top_selling_menu = generator.generate_graph_top_selling_menu_item(
+                save_path=f"media/{type_dashboard}"
+            )
+            top_category = generator.generate_graph_total_sales_by_category(
+                save_path=f"media/{type_dashboard}"
+            )
+            datas.append(heat_map)
+            datas.append(total_sales_over_time)
+            datas.append(top_selling_menu)
+            datas.append(top_category)
+
+            print("save to database: insert_to_db_graph()")
+            insight = generate_insight(datas)
+            print("insert to chroma: insert_to_chroma()")
+            insert_to_db(type_dashboard, datas, insight, from_date, to_date)
+            print("end custom task: custom_task()")
+
+
+        next_year = datetime.date(today.year+1, today.month, today.day)
+        next_year = datetime.datetime.combine(next_year, datetime.time(0, 0))
+        seconds_until_next_year = int((next_year - datetime.datetime.now()).total_seconds())
+        cache.set(lock_key, True, seconds_until_next_year)
+    except Exception as e:
+        print(f"Error in daily task: {e}")
+        raise
+    finally:
+        cache.delete(lock_key + '_running')
+
+
+
